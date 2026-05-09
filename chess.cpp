@@ -12,25 +12,119 @@ protected:
 	int row;
 	int col;
 public:
-	Piece(int r, int c) :row(r),col(c)
+	Piece(int r, int c) :row(r), col(c)
 	{
-		 
+
 	}
-	virtual bool CanMove(int r,int col,char c[8][8]) = 0;
+	virtual bool CanMove(int r, int col, char c[8][8]) = 0;
 
 };
-class Pawn:public Piece
+class Pawn :public Piece
 {
 public:
 
-	Pawn(int r,int c):Piece(r,c)
+	Pawn(int r, int c) :Piece(r, c)
 	{
 
 	}
-	bool CanMove(int r, int col, char c[8][8]) override
-	{
-	
+	bool CanMove(int r, int col, char c[8][8]) override {
+		int rdiff = r - this->row;
+		int coldiff = col - this->col;
+		if (rdiff == -1 && (coldiff == 0 || coldiff == 1 || coldiff == -1) && isupper(c[this->row][this->col]))
+		{
+			cout << "\n you cannot move backward";
+			return false;
+		}
+		if (rdiff == 1 && (coldiff == 0 || coldiff == 1 || coldiff == -1) && islower(c[this->row][this->col]))
+		{
+			cout << "\n you cannot move backward";
+			return false;
+		}
+
+		if ((rdiff == 1 && coldiff == 0) && isupper(c[r][col]) && isupper(c[this->row][this->col]))
+		{
+			cout << "\n it cannnot kill its own piece";
+			return false;
+		}
+		if ((rdiff == -1 && coldiff == 0) && islower(c[r][col]) && islower(c[this->row][this->col]))
+		{
+			cout << "\n it cannnot kill its own piece";
+			return false;
+		}
+
+		if (rdiff == 2 && coldiff == 0 && isupper(c[this->row][this->col]) && this->row == 1 && c[r][col] == ' ')
+		{
+			if (c[this->row + 1][this->col] == ' ' && c[r][col] == ' ')
+			{
+				c[this->row][this->col] = ' ';
+				this->row = r;
+				this->col = col;
+				c[this->row][this->col] = 'P';
+				cout << "\n correct move";
+			}
+		}
+
+
+
+		if (rdiff == -2 && coldiff == 0 && islower(c[this->row][this->col]) && this->row == 6 && c[r][col] == ' ')
+		{
+			if (c[this->row - 1][this->col] == ' ' && c[r][col] == ' ')
+			{
+				c[this->row][this->col] = ' ';
+				this->row = r;
+				this->col = col;
+				c[this->row][this->col] = 'p';
+				cout << "\n correct move";
+			}
+
+		}
+
+		if (rdiff == 1 && coldiff == 0 && isupper(c[this->row][this->col]) && (c[r][col] == ' '))
+		{
+
+
+			c[this->row][this->col] = ' ';
+			this->row = r;
+			this->col = col;
+			c[r][col] = 'P';
+			cout << "\n your piece has been moved";
+
+
+		}
+		if (rdiff == -1 && coldiff == 0 && islower(c[this->row][this->col]) && (c[r][col] == ' '))
+		{
+
+			c[this->row][this->col] = ' ';
+
+			this->row = r;
+			this->col = col;
+			c[r][col] = 'p';
+			cout << "\n your piece has been moved";
+
+
+		}
+		if (isupper(c[this->row][this->col]) && rdiff == 1 && (coldiff == 1 || coldiff == -1))
+		{
+			if (islower(c[r][col]))
+			{
+				c[this->row][this->col] = ' ';
+				this->row = r;
+				this->col = col;
+				c[this->row][this->col] = 'P';
+			}
+		}
+		if (islower(c[this->row][this->col]) && rdiff == -1 && (coldiff == 1 || coldiff == -1))
+		{
+			if (isupper(c[r][col]))
+			{
+				c[this->row][this->col] = ' ';
+				this->row = r;
+				this->col = col;
+				c[this->row][this->col] = 'p';
+			}
+		}
 		return true;
+
 	}
 };
 class Rook :public Piece
@@ -77,7 +171,7 @@ public:
 				}
 				else
 					return false;
-				
+
 			}
 			if (isupper(c[r][col]) && islower(c[this->row][this->col]))
 			{
@@ -98,7 +192,7 @@ public:
 		}
 		return false;
 	}
-	
+
 };
 class Bishop :public Piece
 {
@@ -107,7 +201,7 @@ public:
 	{
 
 	}
-	bool CanMove(int r, int col, char c[8][8]) override 
+	bool CanMove(int r, int col, char c[8][8]) override
 	{
 		if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 		{
@@ -128,33 +222,27 @@ public:
 			isblack = true;
 		int rdiff = r - this->row;
 		int cdiff = col - this->col;
-		bool check=true;
+		bool check = true;
 		rdiff = rdiff < 0 ? -rdiff : rdiff;
 		cdiff = cdiff < 0 ? -cdiff : cdiff;
-		bool isempty = true;
-		if (cdiff==rdiff)
+		if (cdiff == rdiff)
 		{
-			int rdir = (r > this->row) ? 1 : -1;
-			int cdir = (col > this->col) ? 1 : -1;
-			int i = this->row + rdir;
-			int j = this->col + cdir;
-			while (i!=r&&j!=col)
+			for (int i = this->row; i < r; i++)
 			{
-				if (c[i][j] == ' ')
+				for (int j = this->col; j < col; j++)
 				{
-					i += rdir;
-					j += cdir;
+					if (c[i][j] != ' ')
+					{
+						check = false;
+						break;
+					}
 				}
-				else
+				if (check == false)
+				{
+					break;
 					return false;
-			}
-			if (isupper(c[r][col]) && islower(c[this->row][this->col]))
-			{
-				cout << c[r][col] << "Got killed !" << endl;
-			}
-			if (islower(c[r][col]) && isupper(c[this->row][this->col]))
-			{
-				cout << c[r][col] << "Got killed !" << endl;
+				}
+
 			}
 			c[this->row][this->col] = ' ';
 			this->row = r;
@@ -178,6 +266,7 @@ public:
 
 	bool CanMove(int r, int col, char c[8][8]) override
 	{
+
 		if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 		{
 			cout << "\nIt cannor kill its own piece " << endl;
@@ -210,6 +299,8 @@ public:
 		}
 
 		return false;
+
+
 	}
 };
 class Queen :public Piece
@@ -242,9 +333,9 @@ public:
 		int cdiff = col - this->col;
 		rdiff = rdiff < 0 ? -rdiff : rdiff;
 		cdiff = cdiff < 0 ? -cdiff : cdiff;
-		if (cdiff==0||rdiff==0||cdiff==rdiff)
+		if (cdiff == 0 || rdiff == 0 || cdiff == rdiff)
 		{
-			int rdir = (r > this->row) ? 1 : (r == this->row) ? 0:-1;
+			int rdir = (r > this->row) ? 1 : (r == this->row) ? 0 : -1;
 			int cdir = (col > this->col) ? 1 : (col == this->col) ? 0 : -1;
 			int i = this->row + rdir;
 			int j = this->col + cdir;
@@ -275,7 +366,7 @@ public:
 				c[this->row][this->col] = 'Q';
 			return true;
 		}
-		return true;
+		return false;
 	}
 };
 class Knight :public Piece
@@ -384,33 +475,285 @@ public:
 					cout << WHITE_PIECE << arr[i][j] << " " << RESET;
 				else
 					cout << "  " << RESET;
-			}cout << endl;
+			}
+			cout << endl;
 		}
+
 	}
-	void display()
+	bool capture(int kr, int kc, char c[8][8])
 	{
+		int i = kr - 1;
+		int j = kc - 1;
+		while (i >= 0 && j >= 0)
+		{
+			if (c[i][j] != ' ') {
+				if (isupper(c[kr][kc]) && (c[i][j] == 'b' || (c[i][j] == 'q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && (c[i][j] == 'B' || (c[i][j] == 'Q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+				}
+
+
+			}
+			i--;
+			j--;
+		}
+		i = kr + 1;
+		j = kc + 1;
+		while (i < 8 && j < 8)
+		{
+			if (c[i][j] != ' ') {
+				if (isupper(c[kr][kc]) && (c[i][j] == 'b' || (c[i][j] == 'q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && (c[i][j] == 'B' || (c[i][j] == 'Q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+				}
+
+
+			}
+			i++;
+			j++;
+		}
+		i = kr + 1;
+		j = kc - 1;
+		while (i < 8 && j >= 0)
+		{
+			if (c[i][j] != ' ') {
+				if (isupper(c[kr][kc]) && (c[i][j] == 'b' || (c[i][j] == 'q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && (c[i][j] == 'B' || (c[i][j] == 'Q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+				}
+
+
+			}
+			i++;
+			j--;
+		}
+		i = kr - 1;
+		j = kc + 1;
+		while (i >= 0 && j < 8)
+		{
+			if (c[i][j] != ' ') {
+				if (isupper(c[kr][kc]) && (c[i][j] == 'b' || (c[i][j] == 'q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && (c[i][j] == 'B' || (c[i][j] == 'Q')))
+				{
+					cout << "\n king is underattack";
+					return true;
+				}
+
+
+			}
+			j++;
+			i--;
+		}
+
+		for (int i = kr + 1; i < 8; i++)
+		{
+			if (c[i][kc] != ' ')
+			{
+				if (isupper(c[kr][kc]) && ((c[i][kc]) == 'r' || c[i][kc] == 'q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && ((c[i][kc]) == 'R' || c[i][kc] == 'Q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+
+			}
+		}
+		for (int i = kr - 1; i >= 0; i--)
+		{
+			if (c[i][kc] != ' ')
+			{
+				if (isupper(c[kr][kc]) && ((c[i][kc]) == 'r' || c[i][kc] == 'q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && ((c[i][kc]) == 'R' || c[i][kc] == 'Q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+				}
+
+			}
+		}
+		for (int i = kc + 1; i < 8; i++)
+		{
+			if (c[kr][i] != ' ')
+			{
+				if (isupper(c[kr][kc]) && ((c[kr][i]) == 'r' || c[kr][i] == 'q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && ((c[kr][i]) == 'R' || c[kr][i] == 'Q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+
+			}
+		}
+		for (int i = kc - 1; i >= 0; i--)
+		{
+			if (c[kr][i] != ' ')
+			{
+				if (isupper(c[kr][kc]) && ((c[kr][i]) == 'r' || c[kr][i] == 'q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+				if (islower(c[kr][kc]) && ((c[kr][i]) == 'R' || c[kr][i] == 'Q'))
+				{
+					cout << "\n king is underattack";
+					return true;
+
+				}
+
+			}
+		}
+		if (c[kr][kc] == 'K')
+		{
+			if (kr + 1 < 8 && kc + 1 < 8 && c[kr + 1][kc + 1] == 'p')
+				return true;
+
+			if (kr + 1 < 8 && kc - 1 >= 0 && c[kr + 1][kc - 1] == 'p')
+				return true;
+		}
+		if (c[kr][kc] == 'k')
+		{
+			if (kr - 1 >= 0 && kc + 1 < 8 && c[kr - 1][kc + 1] == 'P')
+				return true;
+
+			if (kr - 1 >= 0 && kc - 1 >= 0 && c[kr - 1][kc - 1] == 'P')
+				return true;
+		}
+		if (c[kr][kc] == 'K')
+		{
+			if (kr - 2 >= 0 && kc - 1 >= 0 && c[kr - 2][kc - 1] == 'n')
+				return true;
+
+			if (kr - 2 >= 0 && kc + 1 < 8 && c[kr - 2][kc + 1] == 'n')
+				return true;
+
+			if (kr + 2 < 8 && kc - 1 >= 0 && c[kr + 2][kc - 1] == 'n')
+				return true;
+
+			if (kr + 2 < 8 && kc + 1 < 8 && c[kr + 2][kc + 1] == 'n')
+				return true;
+
+			if (kr - 1 >= 0 && kc - 2 >= 0 && c[kr - 1][kc - 2] == 'n')
+				return true;
+
+			if (kr + 1 < 8 && kc - 2 >= 0 && c[kr + 1][kc - 2] == 'n')
+				return true;
+
+			if (kr - 1 >= 0 && kc + 2 < 8 && c[kr - 1][kc + 2] == 'n')
+				return true;
+
+			if (kr + 1 < 8 && kc + 2 < 8 && c[kr + 1][kc + 2] == 'n')
+				return true;
+		}
+		if (c[kr][kc] == 'k')
+		{
+			if (kr - 2 >= 0 && kc - 1 >= 0 && c[kr - 2][kc - 1] == 'N')
+				return true;
+
+			if (kr - 2 >= 0 && kc + 1 < 8 && c[kr - 2][kc + 1] == 'N')
+				return true;
+
+			if (kr + 2 < 8 && kc - 1 >= 0 && c[kr + 2][kc - 1] == 'N')
+				return true;
+
+			if (kr + 2 < 8 && kc + 1 < 8 && c[kr + 2][kc + 1] == 'N')
+				return true;
+
+			if (kr - 1 >= 0 && kc - 2 >= 0 && c[kr - 1][kc - 2] == 'N')
+				return true;
+
+			if (kr + 1 < 8 && kc - 2 >= 0 && c[kr + 1][kc - 2] == 'N')
+				return true;
+
+			if (kr - 1 >= 0 && kc + 2 < 8 && c[kr - 1][kc + 2] == 'N')
+				return true;
+
+			if (kr + 1 < 8 && kc + 2 < 8 && c[kr + 1][kc + 2] == 'N')
+				return true;
+		}
+		return false;
+	}
+	bool checkmate(int kr, int kc, char c[8][8])
+	{
+		if (!capture(kr, kc, c))
+			return false;
+		int moves[8][2] = { {kr - 1,kc},
+			{kr + 1,kc},
+			{kr,kc - 1},
+			{kr,kc + 1},
+			{kr - 1,kc - 1},
+			{kr - 1,kc + 1},
+			{kr + 1,kc - 1},
+			{kr + 1,kc + 1}
+		};
 		for (int i = 0; i < 8; i++)
 		{
-			for (int j = 0; j < 8; j++)
-			{
-				if ((i + j) % 2 == 0)
-					cout << BG_LIGHT;
-				else
-					cout << BG_DARK;
+			int newr = moves[i][0];
+			int newcol = moves[i][1];
+			if (newr < 0 || newr >= 8 || newcol < 0 || newcol >= 8)
+				continue;
+			if (isupper(c[kr][kc]) && isupper(c[newr][newcol]))
+				continue;
+			if (islower(c[kr][kc]) && islower(c[newr][newcol]))
+				continue;
+			char temp = c[newr][newcol];
+			c[newr][newcol] = c[kr][kc];
+			c[kr][kc] = ' ';
+			bool check = capture(newr, newcol, c);
+			c[kr][kc] = c[newr][newcol];
+			c[newr][newcol] = temp;
+			if (!check)
+				return false;
 
-				if (islower(arr[i][j]))
-					cout << BLACK_PIECE << arr[i][j] << " " << RESET;
-				else if (isupper(arr[i][j]))
-					cout << WHITE_PIECE << arr[i][j] << " " << RESET;
-				else
-					cout << "  " << RESET;
-			}cout << endl;
+			return true;
 		}
 	}
 };
 int main()
 {
 	Board b;
-	
 	system("pause");
 }
