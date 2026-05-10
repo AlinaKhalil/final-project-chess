@@ -150,38 +150,39 @@ bool Bishop::CanMove(int r, int col, char c[8][8])
 {
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
-		cout << "\nIt cannor kill its own piece " << endl;
+		cout << "It cannot kill its own piece." << endl;
 		return false;
 	}
 	if (islower(c[r][col]) && islower(c[this->row][this->col]))
 	{
-		cout << "\nIt cannor kill its own piece " << endl;
+		cout << "It cannot kill its own piece." << endl;
 		return false;
 	}
 	bool isblack = isupper(c[this->row][this->col]) ? false : true;
 	int rdiff = r - this->row;
 	int cdiff = col - this->col;
-	bool check = true;
 	rdiff = rdiff < 0 ? -rdiff : rdiff;
 	cdiff = cdiff < 0 ? -cdiff : cdiff;
 	if (cdiff == rdiff)
 	{
-		for (int i = this->row; i < r; i++)
+		int rdir = (r > this->row) ? 1 : -1;
+		int cdir = (col > this->col) ? 1 : -1;
+		int i = this->row + rdir;
+		int j = this->col + cdir;
+		while (i != r && j != col)
 		{
-			for (int j = this->col; j < col; j++)
+			if (c[i][j] != ' ')
 			{
-				if (c[i][j] != ' ')
-				{
-					check = false;
-					break;
-				}
-			}
-			if (check == false)
-			{
-				break;
+				cout << "Path is blocked." << endl;
 				return false;
 			}
+			i += rdir;
+			j += cdir;
 		}
+		if (isupper(c[r][col]) && islower(c[this->row][this->col]))
+			cout << c[r][col] << " Got killed!" << endl;
+		if (islower(c[r][col]) && isupper(c[this->row][this->col]))
+			cout << c[r][col] << " Got killed!" << endl;
 		c[this->row][this->col] = ' ';
 		this->row = r;
 		this->col = col;
@@ -567,7 +568,7 @@ void Board::display()
 			else if (isupper(arr[i][j]))
 				cout << WHITE_PIECE << arr[i][j] << " " << RESET;
 			else
-				cout << " " << RESET;
+				cout << "  " << RESET;
 		}
 		cout << endl;
 	}
@@ -662,6 +663,7 @@ int Board::gameplay(int sr, int sc, int dr, int dc, bool& whiteTurn)
 				break;
 			}
 	}
+	cout << "\n\n\n";
 	display();
 	cout << "\n\n\n";
 	if (whiteTurn)
