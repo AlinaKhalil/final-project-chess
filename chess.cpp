@@ -96,7 +96,7 @@ bool Pawn::CanMove(int r, int col, char c[8][8])
 			c[this->row][this->col] = 'P';
 		}
 	}
-	if (islower(c[this->row][this->col]) && rdiff == -1 && (coldiff == 1 || coldiff == -1))
+	if ((islower(c[this->row][this->col]) && rdiff == -1) && (coldiff == 1 || coldiff == -1))
 	{
 		if (isupper(c[r][col]))
 		{
@@ -113,6 +113,10 @@ Rook::Rook(int r, int c) : Piece(r, c) {}
 
 bool Rook::CanMove(int r, int col, char c[8][8])
 {
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
 		cout << "\nIt cannor kill its own piece " << endl;
@@ -128,6 +132,7 @@ bool Rook::CanMove(int r, int col, char c[8][8])
 	{
 		int rdir = (r > this->row) ? 1 : (r < this->row) ? -1 : 0;
 		int cdir = (col > this->col) ? 1 : (col < this->col) ? -1 : 0;
+
 		int i = this->row + rdir;
 		int j = this->col + cdir;
 		while (i != r || j != col)
@@ -157,6 +162,10 @@ Bishop::Bishop(int r, int c) : Piece(r, c) {}
 
 bool Bishop::CanMove(int r, int col, char c[8][8])
 {
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
 		cout << "It cannot kill its own piece." << endl;
@@ -172,6 +181,10 @@ bool Bishop::CanMove(int r, int col, char c[8][8])
 	int cdiff = col - this->col;
 	rdiff = rdiff < 0 ? -rdiff : rdiff;
 	cdiff = cdiff < 0 ? -cdiff : cdiff;
+	if (rdiff ==0 && cdiff ==0)
+	{
+		throw invalid_argument("invalid arguemnt");
+	}
 	if (cdiff == rdiff)
 	{
 		int rdir = (r > this->row) ? 1 : -1;
@@ -205,6 +218,10 @@ King::King(int r, int c) : Piece(r, c) {}
 
 bool King::CanMove(int r, int col, char c[8][8])
 {
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
 		cout << "\nIt cannor kill its own piece " << endl;
@@ -233,6 +250,10 @@ Queen::Queen(int r, int c) : Piece(r, c) {}
 
 bool Queen::CanMove(int r, int col, char c[8][8])
 {
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
 		cout << "\nIt cannor kill its own piece " << endl;
@@ -281,6 +302,10 @@ Knight::Knight(int r, int c) : Piece(r, c) {}
 
 bool Knight::CanMove(int r, int col, char c[8][8])
 {
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (isupper(c[r][col]) && isupper(c[this->row][this->col]))
 	{
 		cout << "\nIt cannor kill its own piece " << endl;
