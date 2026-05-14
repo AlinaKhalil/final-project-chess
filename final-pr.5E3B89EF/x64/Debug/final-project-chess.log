@@ -1,4 +1,1 @@
-﻿  chess.cpp
-  main.cpp
-  Generating Code...
-LINK : fatal error LNK1209: program database 'D:\final-project-chess\x64\Debug\final-project-chess.pdb' differs from previous link; relink or rebuild
+﻿  final-project-chess.vcxproj -> D:\final-project-chess\x64\Debug\final-project-chess.exe
