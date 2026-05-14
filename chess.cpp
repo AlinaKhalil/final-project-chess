@@ -17,8 +17,17 @@ Pawn::Pawn(int r, int c) : Piece(r, c) {}
 
 bool Pawn::CanMove(int r, int col, char c[8][8])
 {
+	
 	int rdiff = r - this->row;
 	int coldiff = col - this->col;
+	if (rdiff < -2 || rdiff>2 || coldiff < -1 || coldiff>1)
+	{
+		throw invalid_argument("invalid arguemnt");
+	}
+	if (r < 0 || r>7 || col < 0 || col>7)
+	{
+		throw  out_of_range("\n out of range");
+	}
 	if (rdiff == -1 && (coldiff == 0 || coldiff == 1 || coldiff == -1) && isupper(c[this->row][this->col]))
 	{
 		cout << "\n you cannot move backward";
@@ -353,14 +362,24 @@ Board::Board() :
 
 bool Board::capture(int kr, int kc, char c[8][8])
 {
+	if (kr < 0 || kr > 7 || kc < 0 || kc > 7)
+		throw out_of_range("King position out of board range");
 	int i = kr - 1;
 	int j = kc - 1;
 	while (i >= 0 && j >= 0)
 	{
 		if (c[i][j] != ' ')
 		{
-			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q')) { cout << "\n king is underattack"; return true; }
-			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q')) { cout << "\n king is underattack"; return true; }
+			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q')) 
+			{
+				cout << "\n king is underattack";
+				return true; 
+			}
+			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q'))
+			{
+				cout << "\n king is underattack"; 
+				return true; 
+			}
 			break;
 		}
 		i--; j--;
@@ -370,8 +389,16 @@ bool Board::capture(int kr, int kc, char c[8][8])
 	{
 		if (c[i][j] != ' ')
 		{
-			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q')) { cout << "\n king is underattack"; return true; }
-			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q')) { cout << "\n king is underattack"; return true; }
+			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q')) 
+			{
+				cout << "\n king is underattack"; 
+				return true; 
+			}
+			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q')) 
+			{
+				cout << "\n king is underattack"; 
+				return true; 
+			}
 			break;
 		}
 		i++; j++;
@@ -381,8 +408,16 @@ bool Board::capture(int kr, int kc, char c[8][8])
 	{
 		if (c[i][j] != ' ')
 		{
-			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q')) { cout << "\n king is underattack"; return true; }
-			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q')) { cout << "\n king is underattack"; return true; }
+			if (isupper(c[kr][kc]) && (c[i][j] == 'b' || c[i][j] == 'q'))
+			{
+				cout << "\n king is underattack";
+				return true; 
+			}
+			if (islower(c[kr][kc]) && (c[i][j] == 'B' || c[i][j] == 'Q'))
+			{ 
+				cout << "\n king is underattack";
+				return true; 
+			}
 			break;
 		}
 		i++; j--;
@@ -434,7 +469,9 @@ bool Board::capture(int kr, int kc, char c[8][8])
 			}
 			if (islower(c[kr][kc]) && (c[i][kc] == 'R' || c[i][kc] == 'Q')) 
            {   
-				cout << "\n king is underattack"; return true; }
+				cout << "\n king is underattack";
+				return true; 
+			}
 			break;
 		}
 	}
@@ -507,20 +544,30 @@ bool Board::capture(int kr, int kc, char c[8][8])
 	}
 	if (c[kr][kc] == 'k')
 	{
-		if (kr - 2 >= 0 && kc - 1 >= 0 && c[kr - 2][kc - 1] == 'N') return true;
-		if (kr - 2 >= 0 && kc + 1 < 8 && c[kr - 2][kc + 1] == 'N') return true;
-		if (kr + 2 < 8 && kc - 1 >= 0 && c[kr + 2][kc - 1] == 'N') return true;
-		if (kr + 2 < 8 && kc + 1 < 8 && c[kr + 2][kc + 1] == 'N') return true;
-		if (kr - 1 >= 0 && kc - 2 >= 0 && c[kr - 1][kc - 2] == 'N') return true;
-		if (kr + 1 < 8 && kc - 2 >= 0 && c[kr + 1][kc - 2] == 'N') return true;
-		if (kr - 1 >= 0 && kc + 2 < 8 && c[kr - 1][kc + 2] == 'N') return true;
-		if (kr + 1 < 8 && kc + 2 < 8 && c[kr + 1][kc + 2] == 'N') return true;
+		if (kr - 2 >= 0 && kc - 1 >= 0 && c[kr - 2][kc - 1] == 'N')
+			return true;
+		if (kr - 2 >= 0 && kc + 1 < 8 && c[kr - 2][kc + 1] == 'N')
+			return true;
+		if (kr + 2 < 8 && kc - 1 >= 0 && c[kr + 2][kc - 1] == 'N')
+			return true;
+		if (kr + 2 < 8 && kc + 1 < 8 && c[kr + 2][kc + 1] == 'N') 
+			return true;
+		if (kr - 1 >= 0 && kc - 2 >= 0 && c[kr - 1][kc - 2] == 'N')
+			return true;
+		if (kr + 1 < 8 && kc - 2 >= 0 && c[kr + 1][kc - 2] == 'N')
+			return true;
+		if (kr - 1 >= 0 && kc + 2 < 8 && c[kr - 1][kc + 2] == 'N') 
+			return true;
+		if (kr + 1 < 8 && kc + 2 < 8 && c[kr + 1][kc + 2] == 'N')
+			return true;
 	}
 	return false;
 }
 
 bool Board::checkmate(int kr, int kc, char c[8][8])
 {
+	if (kr < 0 || kr > 7 || kc < 0 || kc > 7)
+		throw out_of_range("King position out of board range");
 	if (!capture(kr, kc, c))
 		return false;
 	int moves[8][2] = {
@@ -534,7 +581,9 @@ bool Board::checkmate(int kr, int kc, char c[8][8])
 		int newr = moves[i][0];
 		int newcol = moves[i][1];
 		if (newr < 0 || newr >= 8 || newcol < 0 || newcol >= 8)
+		{
 			continue;
+		}
 		if (isupper(c[kr][kc]) && isupper(c[newr][newcol]))
 			continue;
 		if (islower(c[kr][kc]) && islower(c[newr][newcol]))
@@ -547,7 +596,7 @@ bool Board::checkmate(int kr, int kc, char c[8][8])
 		c[newr][newcol] = temp;
 		if (!check)
 			return false;
-		return true;
+		
 	}
 	return true;
 }
@@ -576,6 +625,10 @@ void Board::display()
 
 int Board::gameplay(int sr, int sc, int dr, int dc, bool& whiteTurn)
 {
+	if (sr < 0 || sr > 7 ||sc < 0 || sc > 7 ||dr < 0 || dr > 7 ||dc < 0 || dc > 7)
+	{
+		throw out_of_range("Index out of range");
+	}
 	if (whiteTurn && (islower(arr[sr][sc])))
 	{
 		cout << "\n please move your correct piece;";
@@ -592,16 +645,28 @@ int Board::gameplay(int sr, int sc, int dr, int dc, bool& whiteTurn)
 
 	}
 	char piece = arr[sr][sc];
+	if (piece == ' ')
+		throw invalid_argument("No piece selected");
 	bool ans = true;
 	if (piece == 'P' || piece == 'p')
 	{
 		for (int i = 0; i < 16; i++)
 			if (P[i].getRow() == sr && P[i].getCol() == sc)
 			{
-				 ans=P[i].CanMove(dr, dc, arr); 
-				if (ans == false)
+				try
+				{
+					ans = P[i].CanMove(dr, dc, arr);
+
+					if (ans == false)
+						return 0;
+					break;
+
+				}
+				catch (const exception& e) 
+				{
+					cout << "Pawn error: " << e.what() << endl;
 					return 0;
-				break;
+				}
 			}
 	}
 	else if (piece == 'R' || piece == 'r')
@@ -667,40 +732,54 @@ int Board::gameplay(int sr, int sc, int dr, int dc, bool& whiteTurn)
 	display();
 	cout << "\n\n\n";
 	if (whiteTurn)
+		
 	{
-		capture(K[0].getRow(), K[0].getCol(), arr);
-		bool a=checkmate(K[0].getRow(), K[0].getCol(), arr);
-		if (a == true)
+		try
 		{
-			cout << "#################################################\n";
-			cout << "#                                               #\n";
-			cout << "#               GAME ENDED                      #\n";
-			cout << "#                 BLACK WON                     #\n";
-			cout << "#                                               #\n";
-			cout << "#################################################\n";
-			cout << "\n";
-			cout << "\t             CHECKMATE \n";
-			cout << "\n";
-			return -1;
+			capture(K[0].getRow(), K[0].getCol(), arr);
+			bool a = checkmate(K[0].getRow(), K[0].getCol(), arr);
+			if (a == true)
+			{
+				cout << "#################################################\n";
+				cout << "#                                               #\n";
+				cout << "#               GAME ENDED                      #\n";
+				cout << "#                 BLACK WON                     #\n";
+				cout << "#                                               #\n";
+				cout << "#################################################\n";
+				cout << "\n";
+				cout << "\t             CHECKMATE \n";
+				cout << "\n";
+				return -1;
+			}
 		}
-
+		catch(const exception& e)
+		{
+			cout << e.what();
+		}
 	}
 	if (!whiteTurn)
 	{
-		capture(K[1].getRow(), K[1].getCol(), arr);
-		bool a=checkmate(K[0].getRow(), K[0].getCol(), arr);
-		if (a == true)
+		try
 		{
-			cout << "#################################################\n";
-			cout << "#                                               #\n";
-			cout << "#               GAME ENDED                      #\n";
-			cout << "#                 WHITE WON                     #\n";
-			cout << "#                                               #\n";
-			cout << "#################################################\n";
-			cout << "\n";
-			cout << "\t             CHECKMATE \n";
-			cout << "\n";
-			return -1;
+			capture(K[1].getRow(), K[1].getCol(), arr);
+			bool a = checkmate(K[0].getRow(), K[0].getCol(), arr);
+			if (a == true)
+			{
+				cout << "#################################################\n";
+				cout << "#                                               #\n";
+				cout << "#               GAME ENDED                      #\n";
+				cout << "#                 WHITE WON                     #\n";
+				cout << "#                                               #\n";
+				cout << "#################################################\n";
+				cout << "\n";
+				cout << "\t             CHECKMATE \n";
+				cout << "\n";
+				return -1;
+			}
+		}
+		catch (const exception& e)
+		{
+			cout << e.what();
 		}
 	}
 
