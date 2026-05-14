@@ -36,18 +36,17 @@ int main()
 			cout << "            BLACK'S TURN  (lowercase)        \n";
 			cout << "-------------------------------------------------\n";
 		}
-		
-			cout << "Enter source row, source col, dest row, dest col: ";
-			cin >> sr >> sc >> dr >> dc;
 
-		
-		
-		try {
-			 ans = b.gameplay(sr, sc, dr, dc, wturn);
+		cout << "Enter source row, source col, dest row, dest col: ";
+		cin >> sr >> sc >> dr >> dc;
+
+		try
+		{
+			ans = b.gameplay(sr, sc, dr, dc, wturn);
 		}
 		catch (const exception& e)
 		{
-			cout<<e.what();
+			cout << e.what();
 		}
 		if (ans == -1)
 		{

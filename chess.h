@@ -1,8 +1,6 @@
 
 #pragma once
 #include <iostream>
-#include<exception>
-#include<stdexcept>
 
 #define RESET       "\033[0m"
 #define BG_DARK     "\033[48;5;94m"
